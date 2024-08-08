@@ -1,0 +1,16 @@
+version: '3'
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - 60004:9000 # MinIO data API port
+      - 60005:9001 # MinIO web console
+    environment:
+      TZ: Asia/Shanghai
+      MINIO_ROOT_USER: <YOUR_MINIO_ROOT_USERNAME, e.g. 'admin'>
+      MINIO_ROOT_PASSWORD: <YOUR_MINIO_ROOT_PASSWORD, e.g. 'password'>
+    volumes:
+      - <YOUR_DATA_STORAGE_DIRECTORY, e.g. '/home/minio-data'>:/data
+    command: server /data --console-address ":9001"
+    restart: always
