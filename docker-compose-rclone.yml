@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  rclone:
+    image: rclone/rclone
+    container_name: oss_public
+    volumes:
+      - <YOUR_DATA_STORAGE_DIRECTORY, e.g. '/home/oss/public'>:/bucket_data:shared
+    entrypoint: >
+      /bin/sh -c "
+      mkdir -p /config/rclone && 
+      echo '[minio]' > /config/rclone/rclone.conf && 
+      echo 'type = s3' >> /config/rclone/rclone.conf && 
+      echo 'provider = Minio' >> /config/rclone/rclone.conf && 
+      echo 'env_auth = false' >> /config/rclone/rclone.conf && 
+      echo 'access_key_id = <YOUR_ACCESS_KEY_ID>' >> /config/rclone/rclone.conf && 
+      echo 'secret_access_key = <YOUR_SECRET_ACCESS_KEY>' >> /config/rclone/rclone.conf && 
+      echo 'endpoint = http(s)://<YOUR_MINIO_SERVER_IP>:<YOUR_MINIO_PORT>/' >> /config/rclone/rclone.conf && 
+      rclone mount minio:/public /bucket_data --allow-non-empty
+      "
+    restart: always
+    privileged: true
+    
+# !!! MAKE SURE YOU HAVE RUNNED 'sudo modprobe fuse' FIRST
+# !!! MAKE SURE YOU HAVE RUNNED 'sudo modprobe fuse' FIRST
+# !!! MAKE SURE YOU HAVE RUNNED 'sudo modprobe fuse' FIRST
