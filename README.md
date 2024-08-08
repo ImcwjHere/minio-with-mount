@@ -28,18 +28,10 @@ services:
       MINIO_ROOT_USER: <YOUR_MINIO_ROOT_USERNAME, e.g. 'admin'>
       MINIO_ROOT_PASSWORD: <YOUR_MINIO_ROOT_PASSWORD, e.g. 'password'>
     volumes:
-      - /home/minio-data:/data # Replace with your desired data directory
+      - <YOUR_DATA_STORAGE_DIRECTORY, e.g. '/home/minio-data'>:/data
     command: server /data --console-address ":9001"
     restart: always
 ```
-
-### Steps to Deploy
-
-1. Save the above content into a file named `docker-compose.yml`.
-2. Run the following command in the directory where your `docker-compose.yml` is located:
-   ```bash
-   docker-compose up -d
-   ```
 
 ## Mount MinIO Bucket
 
@@ -52,7 +44,7 @@ services:
     image: rclone/rclone
     container_name: oss_public
     volumes:
-      - /home/oss/public:/bucket_data:shared
+      - <YOUR_DATA_STORAGE_DIRECTORY, e.g. '/home/oss/public'>:/bucket_data:shared
     entrypoint: >
       /bin/sh -c "
       mkdir -p /config/rclone && 
@@ -62,7 +54,7 @@ services:
       echo 'env_auth = false' >> /config/rclone/rclone.conf && 
       echo 'access_key_id = <YOUR_ACCESS_KEY_ID>' >> /config/rclone/rclone.conf && 
       echo 'secret_access_key = <YOUR_SECRET_ACCESS_KEY>' >> /config/rclone/rclone.conf && 
-      echo 'endpoint = http://<YOUR_MINIO_SERVER_IP>:<YOUR_MINIO_PORT>/' >> /config/rclone/rclone.conf && 
+      echo 'endpoint = http(s)://<YOUR_MINIO_SERVER_IP>:<YOUR_MINIO_PORT>/' >> /config/rclone/rclone.conf && 
       rclone mount minio:/public /bucket_data --allow-non-empty
       "
     restart: always
